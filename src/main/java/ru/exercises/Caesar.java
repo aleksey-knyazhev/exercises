@@ -1,3 +1,5 @@
+package ru.exercises;
+
 abstract class Caesar {
     public static String encrypt(String message, int offset) {
         StringBuilder result = new StringBuilder();
