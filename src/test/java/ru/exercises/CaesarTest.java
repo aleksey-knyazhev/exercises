@@ -9,4 +9,14 @@ class CaesarTest {
     void encryptShiftsCharactersByOffset() {
         assertThat(Caesar.encrypt("abc", 1)).isEqualTo("bcd");
     }
+
+    @Test
+    void encryptSupportsNegativeOffset() {
+        assertThat(Caesar.encrypt("bcd", -1)).isEqualTo("abc");
+    }
+
+    @Test
+    void encryptReturnsEmptyStringForEmptyMessage() {
+        assertThat(Caesar.encrypt("", 3)).isEmpty();
+    }
 }
