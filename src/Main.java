@@ -1,30 +1,36 @@
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
-        /* Реализовать шифрование методом Цезаря */
+        runCaesarExercise();
+        runSortExercise();
+        runAnagramExercise();
+        runXorExercise();
+        runWalletExercise();
+    }
+
+    /* Реализовать шифрование методом Цезаря */
+    private static void runCaesarExercise() {
         String message = "abc";
         int offset = 1;
         System.out.println("Source message: " + message + ", encrypted message: " + Caesar.encrypt(message, offset));
+    }
 
-
-
-        /*  Дан некоторый массив из 0 и 1, к примеру int[] numbers = [0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0],
+    /*  Дан некоторый массив из 0 и 1, к примеру int[] numbers = [0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0],
         необходимо отсортировать массив максимально быстрым способом */
+    private static void runSortExercise() {
         int[] numbersSort = {0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0};
         System.out.println("Array before sort: " + Arrays.toString(numbersSort));
         sort(numbersSort);
         System.out.println("Array after sort: " + Arrays.toString(numbersSort));
+    }
 
-
-
-        /* Дан массив строк, необходимо вывести все дубликаты, при этом дубликатом являются те строки, которые содержат
+    /* Дан массив строк, необходимо вывести все дубликаты, при этом дубликатом являются те строки, которые содержат
         одни и те же символы, но могут быть просто в другом порядке */
+    private static void runAnagramExercise() {
         String[] words = new String[]{"самолет", "доска", "док", "летсамо", "скадо", "самокат"};
         AnagramDictionary dictionary = new AnagramDictionary(words);
         System.out.println(dictionary);
@@ -37,23 +43,23 @@ public class Main {
             }
         }
         System.out.println("Duplicates: " + set);
+    }
 
-
-
-        /* Известно, что числовой массив состоит из пар одинаковых чисел, но есть одно число в единственном экземпляре,
+    /* Известно, что числовой массив состоит из пар одинаковых чисел, но есть одно число в единственном экземпляре,
         необходимо найти это число за один проход по массиву */
+    private static void runXorExercise() {
         int[] numbersWithUnique = {3, 4, 0, 0, 2, 1, 4, 3, 1};
         System.out.println("Array with unique: " + Arrays.toString(numbersWithUnique));
         System.out.println("Unique: " + xor(numbersWithUnique));
+    }
 
-
-
-        /* Вам даны несколько монет номиналом от 1 до 9 (монеты могут повторяться). Ваша функция должна вернуть
+    /* Вам даны несколько монет номиналом от 1 до 9 (монеты могут повторяться). Ваша функция должна вернуть
         минимальную положительную целую сумму, которую нельзя заплатить этими монетами без сдачи.
         Если, например, у Вас есть 2 монеты номиналом 3, 5, функция должна вернуть 1, т.к. если заплатим монетой 3,
         то сдача будет 2, а если 5 - сдача будет 4. Без сдачи нельзя.
         Если у Вас есть 3 монеты номиналом 1, 2, 3, функция должна вернуть 7, т.к. все числа, что меньше,
         можно оплатить этими монетами без сдачи */
+    private static void runWalletExercise() {
         int[] coins = {1, 2, 3};
         Wallet wallet = new Wallet(coins);
         System.out.println(wallet);
@@ -76,102 +82,5 @@ public class Main {
             unique = unique ^ i;
         }
         return unique;
-    }
-}
-
-abstract class Caesar {
-    public static String encrypt(String message, int offset) {
-        StringBuilder result = new StringBuilder();
-        for (char character : message.toCharArray()) {
-            result.append((char) (character + offset));
-        }
-        return result.toString();
-    }
-}
-
-class AnagramDictionary {
-    private final String[] words;
-    private final String[] normalizedWords;
-
-    public AnagramDictionary(String[] words) {
-        this.words = words;
-        this.normalizedWords = Arrays.stream(words).map(this::normalize).distinct().toArray(String[]::new);
-    }
-
-    public String[] getWords() {
-        return words;
-    }
-
-    private String normalize(String word) {
-        return word.chars()        // IntStream
-                .sorted()
-                .collect(StringBuilder::new,
-                        StringBuilder::appendCodePoint,
-                        StringBuilder::append)
-                .toString();
-    }
-
-    public List<String> getAnagrams(String testWord) {
-        ArrayList<String> result = new ArrayList<>();
-        if (testWord == null || testWord.equals("")) {
-            return result;
-        }
-
-        String normalizedTestWord = normalize(testWord);
-        if (Arrays.asList(normalizedWords).contains(normalizedTestWord)) {
-            for (String word : words) {
-                if (normalizedTestWord.equals(normalize(word))) {
-                    result.add(word);
-                }
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "AnagramDictionary{" +
-                "words=" + Arrays.toString(words) +
-                ", normalizedWords=" + Arrays.toString(normalizedWords) +
-                '}';
-    }
-
-}
-
-class Wallet {
-    private final int[] coins;
-    private int total;
-
-    public Wallet(int[] coins) {
-        this.coins = Arrays.stream(coins).boxed().sorted(Collections.reverseOrder()).mapToInt(Integer::intValue).toArray();
-        this.total = Arrays.stream(coins).sum();
-    }
-
-    public int withoutChange() {
-        for (int i = 1; i <= total + 1; i++) {
-            //System.out.println("i: " + i);
-            if (check(i)) {
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    private boolean check(int left) {
-        for (int coin : coins) {
-            if (coin > left) continue;
-            if (coin == left) return false;
-
-            left -= coin;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Wallet{" +
-                "coins=" + Arrays.toString(coins) +
-                ", total=" + total +
-                '}';
     }
 }
